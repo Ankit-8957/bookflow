@@ -11,6 +11,15 @@ const api = axios.create({
   },
 });
 
+// Attach Bearer token from localStorage to every request (critical for cross-domain deployments)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('bookleaf_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export const checkApiHealth = async () => {
   const response = await api.get('/health');
   return response.data;
